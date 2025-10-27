@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Cutting Optimizer</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  h1 { text-align: center; }
+  #controls { margin-bottom: 20px; }
+  label { margin-right: 5px; }
+  input[type="number"] { width: 80px; margin-right: 10px; }
+  input[type="text"] { width: 300px; margin-right: 10px; }
+  button { padding: 5px 15px; font-size: 16px; cursor: pointer; }
+  #summary { margin-top: 20px; font-weight: bold; }
+  canvas { border: 1px solid #333; margin-top: 20px; display: block; margin-left: auto; margin-right: auto; }
+
+  /* Profile section */
+  #about {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  #about img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    display: block;
+    margin: 0 auto 10px auto;
+  }
+  #about p {
+    margin: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Profile section at the top -->
+<div id="about">
+  <img src="photo.jpg" alt="Profile Photo">
+  <p style="font-size:18px; font-weight:bold;">Developed by Getnet Tadesse</p>
+  <p style="font-size:14px; color:#555;">Ethiopia | Creator of Stock Cutting Optimizer</p>
+</div>
+
+<h1>Stock Cutting Optimizer</h1>
+
+<div id="controls">
+  <label>Stock Length:</label>
+  <input type="number" id="stockLength" value="1000">
+  <br><br>
+  <label>Part Lengths (comma separated):</label>
+  <input type="text" id="partLengths" value="200,300,150">
+  <br><br>
+  <label>Part Demands (comma separated):</label>
+  <input type="text" id="partDemands" value="3,2,4">
+  <br><br>
+  <button onclick="runOptimizer()">Run Optimization</button>
+</div>
+
+<div id="summary"></div>
+<canvas id="canvas" width="1000" height="600"></canvas>
+
+<script>
+function generatePatterns(stockLength, partLengths) {
+  const patterns = [];
+  const n = partLengths.length;
+
+  function recurse(currentCuts, start) {
+    let total = currentCuts.reduce((sum, c, i) => sum + c * partLengths[i], 0);
+    if (total <= stockLength && total > 0) {
+      patterns.push({ cuts: [...currentCuts], waste: stockLength - total });
+    }
+    for (let i = start; i < n; i++) {
+      currentCuts[i]++;
+      if (total + partLengths[i] <= stockLength) recurse(currentCuts, i);
+      currentCuts[i]--;
+    }
+  }
+
+  recurse(new Array(n).fill(0), 0);
+  patterns.sort((a, b) => a.waste - b.waste);
+  return patterns;
+}
+
+function runOptimizer() {
+  const stockLength = Number(document.getElementById('stockLength').value);
+  const partLengths = document.getElementById('partLengths').value.split(',').map(Number);
+  const partDemands = document.getElementById('partDemands').value.split(',').map(Number);
+
+  const patterns = generatePatterns(stockLength, partLengths);
+  const demandLeft = [...partDemands];
+  const stockUsed = [];
+
+  while (demandLeft.some(d => d > 0)) {
+    let best = patterns.find(p => p.cuts.some((c, i) => c > 0 && demandLeft[i] > 0));
+    if (!best) break;
+
+    let maxTimesArray = best.cuts.map((c, i) => c > 0 ? Math.ceil(demandLeft[i] / c) : Infinity);
+    let validTimes = maxTimesArray.filter(x => isFinite(x) && x > 0);
+    let maxTimes = validTimes.length ? Math.min(...validTimes) : 1;
+
+    stockUsed.push({ pattern: best, quantity: maxTimes });
+    for (let i = 0; i < demandLeft.length; i++) {
+      demandLeft[i] = Math.max(0, demandLeft[i] - best.cuts[i] * maxTimes);
+    }
+  }
+
+  let totalStock = stockUsed.reduce((sum, s) => sum + s.quantity, 0);
+  let totalWaste = stockUsed.reduce((sum, s) => sum + s.quantity * s.pattern.waste, 0);
+  let utilization = totalStock > 0 ? 1 - totalWaste / (totalStock * stockLength) : 0;
+
+  document.getElementById('summary').innerHTML =
+    `Total Stock Used: ${totalStock} | Total Waste: ${totalWaste.toFixed(2)} | Utilization: ${(utilization * 100).toFixed(2)}%`;
+
+  drawPatterns(stockLength, partLengths, stockUsed);
+}
+
+function drawPatterns(stockLength, partLengths, stockUsed) {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const scale = canvas.width / stockLength;
+  const barHeight = 40;
+  const spacing = 25;
+  let top = 20;
+
+  const colors = ['#FF9999', '#99CCFF', '#99FF99', '#FFCC99', '#CC99FF', '#FFFF99', '#FF99CC'];
+
+  stockUsed.forEach((s, idx) => {
+    for (let q = 0; q < s.quantity; q++) {
+      let left = 0;
+
+      ctx.fillStyle = '#E0E0E0';
+      ctx.fillRect(left, top, stockLength * scale, barHeight);
+      ctx.strokeStyle = '#333';
+      ctx.strokeRect(left, top, stockLength * scale, barHeight);
+
+      s.pattern.cuts.forEach((c, i) => {
+        for (let j = 0; j < c; j++) {
+          let width = partLengths[i] * scale;
+          ctx.fillStyle = colors[i % colors.length];
+          ctx.fillRect(left, top, width, barHeight);
+          ctx.strokeStyle = '#000';
+          ctx.strokeRect(left, top, width, barHeight);
+          ctx.fillStyle = '#000';
+          ctx.font = '12px Arial';
+          ctx.fillText(`P${i + 1}`, left + width / 2 - 10, top + barHeight / 2 + 4);
+          left += width;
+        }
+      });
+
+      const usedLength = s.pattern.cuts.reduce((sum, c, i) => sum + c * partLengths[i], 0);
+      const waste = stockLength - usedLength;
+      if (waste > 0) {
+        ctx.fillStyle = '#444';
+        ctx.fillRect(left, top, waste * scale, barHeight);
+        ctx.fillStyle = '#FFF';
+        ctx.fillText(`W:${waste}`, left + 5, top + barHeight / 2 + 4);
+      }
+
+      ctx.fillStyle = '#000';
+      ctx.font = '14px Arial';
+      ctx.fillText(`Pattern ${idx + 1} ×${s.quantity}`, 5, top - 5);
+
+      top += barHeight + spacing;
+    }
+  });
+}
+</script>
+
+</body>
+</html>

@@ -31,6 +31,22 @@
   #about p {
     margin: 3px;
   }
+
+  /* README / Project Info section */
+  #project-info {
+    margin-top: 50px;
+    padding: 20px;
+    border-top: 2px solid #333;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  #project-info h2 {
+    margin-bottom: 15px;
+  }
+  #project-info p {
+    margin: 5px 0;
+    color: #555;
+  }
 </style>
 </head>
 <body>
@@ -168,6 +184,16 @@ function drawPatterns(stockLength, partLengths, stockUsed) {
   });
 }
 </script>
+
+<!-- README / Project Info section -->
+<div id="project-info">
+  <h2>About This Project</h2>
+  <p>This project is a web-based tool to optimize stock cutting for various parts.</p>
+  <p><strong>Developer:</strong> Getnet Tadesse</p>
+  <p><strong>Location:</strong> Ethiopia</p>
+  <p><strong>Tools:</strong> HTML, JavaScript, Canvas</p>
+  <p>Upload your stock length, part lengths, and part demands, then click "Run Optimization" to visualize the cutting patterns.</p>
+</div>
 
 </body>
 </html>

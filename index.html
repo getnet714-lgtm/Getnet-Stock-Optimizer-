@@ -5,38 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stock Cutting Optimizer</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  h1 { text-align: center; margin-bottom: 10px; }
-  #controls { margin-bottom: 10px; text-align:center; }
-  label { margin-right: 5px; }
-  input[type="number"] { width: 80px; margin-right: 10px; }
-  input[type="text"] { width: 300px; margin-right: 10px; }
-  button { padding: 5px 15px; font-size: 16px; cursor: pointer; }
-  #summary { margin-top: 15px; font-weight: bold; text-align:center; }
-  canvas { border: 1px solid #333; margin-top: 20px; display: block; margin-left: auto; margin-right: auto; }
+body { font-family: Arial, sans-serif; margin: 20px; }
+h1 { text-align: center; margin-bottom: 10px; }
+#controls { margin-bottom: 10px; text-align:center; }
+label { margin-right: 5px; }
+input[type="number"] { width: 60px; margin-right: 5px; text-align:center; }
+button { padding: 5px 15px; font-size: 16px; cursor: pointer; }
+#summary { margin-top: 15px; font-weight: bold; text-align:center; }
+canvas { border: 1px solid #333; margin-top: 20px; display: block; margin-left: auto; margin-right: auto; }
 
-  /* Profile */
-  #about { text-align: center; margin-bottom: 10px; }
-  #about img {
-    width: 150px; height: 150px; border-radius: 50%;
-    border: 2px solid #333; display: block; margin: 0 auto 10px auto;
-  }
-  #about p { margin: 3px; }
+#about { text-align: center; margin-bottom: 10px; }
+#about img { width: 150px; height: 150px; border-radius: 50%; border: 2px solid #333; display: block; margin: 0 auto 10px auto; }
+#about p { margin: 3px; }
 
-  /* Instruction box below title */
-  #instructions {
-    width: 80%;
-    margin: 0 auto 20px auto;
-    border: 2px solid #333;
-    border-radius: 10px;
-    padding: 12px 15px;
-    background: #f8f8f8;
-    font-size: 13px;
-    line-height: 1.4;
-    height: 200px;
-    overflow-y: auto;
-  }
-  #instructions h3 { text-align: center; margin-top: 0; font-size: 15px; }
+#instructions {
+  width: 80%;
+  margin: 0 auto 20px auto;
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 12px 15px;
+  background: #f8f8f8;
+  font-size: 13px;
+  line-height: 1.4;
+  height: 200px;
+  overflow-y: auto; /* scrollable */
+}
+#instructions h3 { text-align: center; margin-top: 0; font-size: 15px; }
+
+.input-boxes { display:flex; justify-content:center; flex-wrap:wrap; margin-bottom:10px; }
+.input-boxes input { width: 50px; margin-right:5px; text-align:center; }
 </style>
 </head>
 <body>
@@ -50,7 +47,6 @@
 
 <h1>Stock Cutting Optimizer</h1>
 
-<!-- Full instruction box below the title -->
 <div id="instructions">
   <h3>Functions of the Application and Instructions</h3>
   <p><strong>One Dimensional Stock</strong><br>
@@ -65,23 +61,48 @@
   <p><strong>Instructions</strong><br>
   You will find a box that asks you to enter the length of stock. Enter the length of stock measured in CM. 
   For instance, if you are dealing with a 12-meter metal bar, enter <strong>1200</strong>.<br>
-  Next, there is a box in which you are expected to enter the lengths of the parts to be cut from the stock, separated by commas. 
-  For example, you may want to cut parts of lengths 200, 430, and 300 cm. 
+  Next, there are a boxes in which you are expected to enter the lengths of the parts to be cut from the stock. 
+  For example, you may want to cut three parts with a lengths of lengths 200, 430, and 300 cm. So you will enter these values in the first three boxes.
   Do not write “cm” after the values, just the numbers.<br>
-  Finally, there is a box in which you will enter the quantity demand of parts, separated by commas — these values must be integers. 
-  For instance, you might have demands of 20, 10, and 60 for the parts entered in the previous box.</p>
+  Finally, there are boxes in which you will enter the quantity demand of parts, each value in each boxes — these values must be integers. 
+  For instance, you might have demands of 20, 10, and 60 for the parts, so yow will enter these values in the three boxes which are parallel to part length boxes.</p>
 
-  <p><strong>NB:</strong> For precision and accuracy, it is better not to specify more than 10 parts. 
-  Until further updates and development of the program, the maximum number of parts this app can handle with accurate solutions is four.</p>
+  <p><strong>NB:</strong> For precision and accuracy, it is better to specify less than 10 parts. 
+  Until further updates and development of the program, the maximum number of parts this app can handle with accurate solutions is ten.</p>
 </div>
 
 <div id="controls">
   <label>Stock Length:</label>
-  <input type="number" id="stockLength" value="1000"><br><br>
-  <label>Part Lengths (comma separated):</label>
-  <input type="text" id="partLengths" value="200,300,150"><br><br>
-  <label>Part Demands (comma separated):</label>
-  <input type="text" id="partDemands" value="3,2,4"><br><br>
+  <input type="number" id="stockLength" placeholder="1000"><br><br>
+
+  <label>Part Lengths:</label>
+  <div class="input-boxes" id="partLengthsBoxes">
+    <input type="number" id="p1" placeholder="P1">
+    <input type="number" id="p2" placeholder="P2">
+    <input type="number" id="p3" placeholder="P3">
+    <input type="number" id="p4" placeholder="P4">
+    <input type="number" id="p5" placeholder="P5">
+    <input type="number" id="p6" placeholder="P6">
+    <input type="number" id="p7" placeholder="P7">
+    <input type="number" id="p8" placeholder="P8">
+    <input type="number" id="p9" placeholder="P9">
+    <input type="number" id="p10" placeholder="P10">
+  </div>
+
+  <label>Part Demands:</label>
+  <div class="input-boxes" id="partDemandBoxes">
+    <input type="number" id="d1" placeholder="D1">
+    <input type="number" id="d2" placeholder="D2">
+    <input type="number" id="d3" placeholder="D3">
+    <input type="number" id="d4" placeholder="D4">
+    <input type="number" id="d5" placeholder="D5">
+    <input type="number" id="d6" placeholder="D6">
+    <input type="number" id="d7" placeholder="D7">
+    <input type="number" id="d8" placeholder="D8">
+    <input type="number" id="d9" placeholder="D9">
+    <input type="number" id="d10" placeholder="D10">
+  </div><br>
+
   <button onclick="runOptimizer()">Run Optimization</button>
 </div>
 
@@ -89,117 +110,134 @@
 <canvas id="canvas" width="1000" height="600"></canvas>
 
 <script>
-function generatePatterns(stockLength, partLengths) {
-  const patterns = [];
-  const n = partLengths.length;
-
-  function recurse(currentCuts, start) {
-    let total = currentCuts.reduce((sum, c, i) => sum + c * partLengths[i], 0);
-    if (total <= stockLength && total > 0) {
-      patterns.push({ cuts: [...currentCuts], waste: stockLength - total });
-    }
-    for (let i = start; i < n; i++) {
-      currentCuts[i]++;
-      if (total + partLengths[i] <= stockLength) recurse(currentCuts, i);
-      currentCuts[i]--;
+// Read 10 inputs
+function readInputs() {
+  const lengths=[], demands=[];
+  for(let i=1;i<=10;i++){
+    const len = Number(document.getElementById('p'+i).value);
+    const dem = Number(document.getElementById('d'+i).value);
+    if(len>0 && dem>0){
+      lengths.push(len);
+      demands.push(dem);
     }
   }
+  return {lengths, demands};
+}
 
-  recurse(new Array(n).fill(0), 0);
-  patterns.sort((a, b) => a.waste - b.waste);
+// Generate patterns with waste < min part
+function generatePatterns(stockLength, partLengths){
+  const patterns=[];
+  const n=partLengths.length;
+  if(n===0) return patterns;
+  const minPart=Math.min(...partLengths);
+
+  function recurse(cuts,start){
+    const total=cuts.reduce((s,c,i)=>s+c*partLengths[i],0);
+    if(total<=stockLength && total>0 && stockLength-total<=minPart){
+      patterns.push({cuts:[...cuts], waste:stockLength-total});
+    }
+    for(let i=start;i<n;i++){
+      cuts[i]++;
+      if(total+partLengths[i]<=stockLength) recurse(cuts,i);
+      cuts[i]--;
+    }
+  }
+  recurse(new Array(n).fill(0),0);
+
+  // Ensure each part appears in at least one pattern
+  partLengths.forEach((_,i)=>{
+    if(!patterns.some(p=>p.cuts[i]>0)){
+      const cuts=new Array(n).fill(0);
+      cuts[i]=Math.floor(stockLength/partLengths[i]);
+      patterns.push({cuts, waste:stockLength-cuts[i]*partLengths[i]});
+    }
+  });
+
   return patterns;
 }
 
-function runOptimizer() {
-  const stockLength = Number(document.getElementById('stockLength').value);
-  const partLengths = document.getElementById('partLengths').value.split(',').map(Number);
-  const partDemands = document.getElementById('partDemands').value.split(',').map(Number);
-
-  const patterns = generatePatterns(stockLength, partLengths);
-  const demandLeft = [...partDemands];
-  const stockUsed = [];
-
-  while (demandLeft.some(d => d > 0)) {
-    let best = patterns.find(p => p.cuts.some((c, i) => c > 0 && demandLeft[i] > 0));
-    if (!best) break;
-
-    let maxTimesArray = best.cuts.map((c, i) => c > 0 ? Math.ceil(demandLeft[i] / c) : Infinity);
-    let validTimes = maxTimesArray.filter(x => isFinite(x) && x > 0);
-    let maxTimes = validTimes.length ? Math.min(...validTimes) : 1;
-
-    stockUsed.push({ pattern: best, quantity: maxTimes });
-    for (let i = 0; i < demandLeft.length; i++) {
-      demandLeft[i] = Math.max(0, demandLeft[i] - best.cuts[i] * maxTimes);
+// Allocate patterns to satisfy demand exactly (unused space = waste)
+function allocatePatterns(patterns, demands, stockLength, partLengths){
+  const remaining=[...demands];
+  const allocation=[];
+  while(remaining.some(d=>d>0)){
+    let bestPattern=null, bestCoverage=-1;
+    for(const p of patterns){
+      let coverage=p.cuts.reduce((s,c,i)=>s+Math.min(c,remaining[i]),0);
+      if(coverage>bestCoverage){ bestCoverage=coverage; bestPattern=p; }
     }
+    if(!bestPattern) break;
+
+    const adjustedCuts=bestPattern.cuts.map((c,i)=>Math.min(c,remaining[i]));
+    const usedLength=adjustedCuts.reduce((s,c,i)=>s+c*partLengths[i],0);
+    allocation.push({pattern:{cuts:adjustedCuts,waste:stockLength-usedLength}, quantity:1});
+
+    for(let i=0;i<remaining.length;i++) remaining[i]-=adjustedCuts[i];
   }
+  return allocation;
+}
 
-  let totalStock = stockUsed.reduce((sum, s) => sum + s.quantity, 0);
-  let totalWaste = stockUsed.reduce((sum, s) => sum + s.quantity * s.pattern.waste, 0);
-  let utilization = totalStock > 0 ? 1 - totalWaste / (totalStock * stockLength) : 0;
+function runOptimizer(){
+  const stockLength=Number(document.getElementById('stockLength').value);
+  const {lengths:partLengths, demands:partDemands}=readInputs();
+  if(partLengths.length===0) return alert("Enter at least one part length and demand");
 
-  document.getElementById('summary').innerHTML =
-    `Total Stock Used: ${totalStock} | Total Waste: ${totalWaste.toFixed(2)} | Utilization: ${(utilization * 100).toFixed(2)}%`;
+  const patterns=generatePatterns(stockLength, partLengths);
+  const stockUsed=allocatePatterns(patterns, partDemands, stockLength, partLengths);
+
+  let totalStock=stockUsed.length;
+  let totalWaste=stockUsed.reduce((s,a)=>s+a.pattern.waste,0);
+  let utilization=1-totalWaste/(totalStock*stockLength);
+
+  document.getElementById('summary').innerHTML=
+    `Total Stock Used: ${totalStock} | Total Waste: ${totalWaste} | Utilization: ${(utilization*100).toFixed(2)}%`;
 
   drawPatterns(stockLength, partLengths, stockUsed);
 }
 
-function drawPatterns(stockLength, partLengths, stockUsed) {
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function drawPatterns(stockLength, partLengths, stockUsed){
+  const canvas=document.getElementById('canvas');
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const scale=canvas.width/stockLength;
+  const barHeight=40, spacing=25;
+  let top=20;
+  const colors=['#FF9999','#99CCFF','#99FF99','#FFCC99','#CC99FF','#FFFF99','#FF99CC','#66CCCC','#FFB366','#A3A3FF'];
 
-  const scale = canvas.width / stockLength;
-  const barHeight = 40;
-  const spacing = 25;
-  let top = 20;
+  stockUsed.forEach((s,idx)=>{
+    let left=0;
+    ctx.fillStyle='#E0E0E0';
+    ctx.fillRect(left,top,stockLength*scale,barHeight);
+    ctx.strokeStyle='#333';
+    ctx.strokeRect(left,top,stockLength*scale,barHeight);
 
-  const colors = ['#FF9999', '#99CCFF', '#99FF99', '#FFCC99', '#CC99FF', '#FFFF99', '#FF99CC', '#66CCCC', '#FFB366', '#A3A3FF'];
-
-  stockUsed.forEach((s, idx) => {
-    for (let q = 0; q < s.quantity; q++) {
-      let left = 0;
-
-      ctx.fillStyle = '#E0E0E0';
-      ctx.fillRect(left, top, stockLength * scale, barHeight);
-      ctx.strokeStyle = '#333';
-      ctx.strokeRect(left, top, stockLength * scale, barHeight);
-
-      s.pattern.cuts.forEach((c, i) => {
-        for (let j = 0; j < c; j++) {
-          let width = partLengths[i] * scale;
-          ctx.fillStyle = colors[i % colors.length];
-          ctx.fillRect(left, top, width, barHeight);
-          ctx.strokeStyle = '#000';
-          ctx.strokeRect(left, top, width, barHeight);
-          ctx.fillStyle = '#000';
-          ctx.font = '12px Arial';
-          ctx.fillText(`P${i + 1}`, left + width / 2 - 10, top + barHeight / 2 + 4);
-
-          // show cumulative length marker
-          left += width;
-          ctx.fillText(`${Math.round(left / scale)}`, left - 20, top - 5);
-        }
-      });
-
-      const usedLength = s.pattern.cuts.reduce((sum, c, i) => sum + c * partLengths[i], 0);
-      const waste = stockLength - usedLength;
-
-      if (waste > 0) {
-        ctx.fillStyle = '#444';
-        ctx.fillRect(left, top, waste * scale, barHeight);
-        ctx.fillStyle = '#FFF';
-        ctx.fillText(`W:${waste}`, left + 5, top + barHeight / 2 + 4);
+    s.pattern.cuts.forEach((c,i)=>{
+      for(let j=0;j<c;j++){
+        let width=partLengths[i]*scale;
+        ctx.fillStyle=colors[i%colors.length];
+        ctx.fillRect(left,top,width,barHeight);
+        ctx.strokeRect(left,top,width,barHeight);
+        ctx.fillStyle='#000';
+        ctx.font='12px Arial';
+        ctx.fillText(`P${i+1}`,left+width/2-10,top+barHeight/2+4);
+        left+=width;
+        ctx.fillText(`${Math.round(left/scale)}`,left-20,top-5);
       }
+    });
 
-      ctx.fillStyle = '#000';
-      ctx.font = '13px Arial';
-      ctx.fillText(`Pattern ${idx + 1} ×${s.quantity} | Used ${usedLength} / Waste ${waste}`, 5, top + barHeight + 15);
-
-      top += barHeight + spacing + 10;
+    if(s.pattern.waste>0){
+      ctx.fillStyle='#444';
+      ctx.fillRect(left,top,s.pattern.waste*scale,barHeight);
+      ctx.fillStyle='#FFF';
+      ctx.fillText(`W:${s.pattern.waste}`, left+5, top+barHeight/2+4);
     }
+
+    ctx.fillStyle='#000';
+    ctx.font='13px Arial';
+    ctx.fillText(`Pattern ${idx+1} ×${s.quantity} | Used ${stockLength-s.pattern.waste} / Waste ${s.pattern.waste}`, 5, top+barHeight+15);
+    top+=barHeight+spacing+10;
   });
 }
 </script>
-
 </body>
 </html>

@@ -6,70 +6,82 @@
 <title>Stock Cutting Optimizer</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; }
-  h1 { text-align: center; }
-  #controls { margin-bottom: 20px; }
+  h1 { text-align: center; margin-bottom: 10px; }
+  #controls { margin-bottom: 10px; text-align:center; }
   label { margin-right: 5px; }
   input[type="number"] { width: 80px; margin-right: 10px; }
   input[type="text"] { width: 300px; margin-right: 10px; }
   button { padding: 5px 15px; font-size: 16px; cursor: pointer; }
-  #summary { margin-top: 20px; font-weight: bold; }
+  #summary { margin-top: 15px; font-weight: bold; text-align:center; }
   canvas { border: 1px solid #333; margin-top: 20px; display: block; margin-left: auto; margin-right: auto; }
 
-  /* Profile section */
-  #about {
-    text-align: center;
-    margin-bottom: 30px;
-  }
+  /* Profile */
+  #about { text-align: center; margin-bottom: 10px; }
   #about img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    border: 2px solid #333;
-    display: block;
-    margin: 0 auto 10px auto;
+    width: 150px; height: 150px; border-radius: 50%;
+    border: 2px solid #333; display: block; margin: 0 auto 10px auto;
   }
-  #about p {
-    margin: 3px;
-  }
+  #about p { margin: 3px; }
 
-  /* README / Project Info section */
-  #project-info {
-    margin-top: 50px;
-    padding: 20px;
-    border-top: 2px solid #333;
-    text-align: center;
-    font-family: Arial, sans-serif;
+  /* Instruction box below title */
+  #instructions {
+    width: 80%;
+    margin: 0 auto 20px auto;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 12px 15px;
+    background: #f8f8f8;
+    font-size: 13px;
+    line-height: 1.4;
+    height: 200px;
+    overflow-y: auto;
   }
-  #project-info h2 {
-    margin-bottom: 15px;
-  }
-  #project-info p {
-    margin: 5px 0;
-    color: #555;
-  }
+  #instructions h3 { text-align: center; margin-top: 0; font-size: 15px; }
 </style>
 </head>
 <body>
 
-<!-- Profile section at the top -->
 <div id="about">
   <img src="photo.jpg" alt="Profile Photo">
   <p style="font-size:18px; font-weight:bold;">Developed by Getnet Tadesse</p>
   <p style="font-size:14px; color:#555;">Ethiopia | Creator of Stock Cutting Optimizer</p>
+  <p style="font-size:14px; color:#777;">Bahir Dar University, Optimization Science Lecturer and Practitioner</p>
 </div>
 
 <h1>Stock Cutting Optimizer</h1>
 
+<!-- Full instruction box below the title -->
+<div id="instructions">
+  <h3>Functions of the Application and Instructions</h3>
+  <p><strong>One Dimensional Stock</strong><br>
+  These are stocks like circular or rectangular pipes, reinforcement steel, steel bars, woods, wires, etc. 
+  In such types of stocks, cutting is performed only along the length dimension — therefore, they are called one-dimensional.</p>
+
+  <p><strong>Functions of the App</strong><br>
+  This web application is programmed to provide a solution for stock cutting problems. 
+  The application generates the best optimum cutting layouts that minimize the total stock required for a given job, 
+  eliminate waste or trim losses, and visualize the cutting layouts.</p>
+
+  <p><strong>Instructions</strong><br>
+  You will find a box that asks you to enter the length of stock. Enter the length of stock measured in CM. 
+  For instance, if you are dealing with a 12-meter metal bar, enter <strong>1200</strong>.<br>
+  Next, there is a box in which you are expected to enter the lengths of the parts to be cut from the stock, separated by commas. 
+  For example, you may want to cut parts of lengths 200, 430, and 300 cm. 
+  Do not write “cm” after the values, just the numbers.<br>
+  Finally, there is a box in which you will enter the quantity demand of parts, separated by commas — these values must be integers. 
+  For instance, you might have demands of 20, 10, and 60 for the parts entered in the previous box.</p>
+
+  <p><strong>NB:</strong> For precision and accuracy, it is better not to specify more than 10 parts. 
+  Until further updates and development of the program, the maximum number of parts this app can handle with accurate solutions is four.</p>
+</div>
+
 <div id="controls">
   <label>Stock Length:</label>
-  <input type="number" id="stockLength" value="1000">
-  <br><br>
+  <input type="number" id="stockLength" value="1000"><br><br>
   <label>Part Lengths (comma separated):</label>
-  <input type="text" id="partLengths" value="200,300,150">
-  <br><br>
+  <input type="text" id="partLengths" value="200,300,150"><br><br>
   <label>Part Demands (comma separated):</label>
-  <input type="text" id="partDemands" value="3,2,4">
-  <br><br>
+  <input type="text" id="partDemands" value="3,2,4"><br><br>
   <button onclick="runOptimizer()">Run Optimization</button>
 </div>
 
@@ -141,7 +153,7 @@ function drawPatterns(stockLength, partLengths, stockUsed) {
   const spacing = 25;
   let top = 20;
 
-  const colors = ['#FF9999', '#99CCFF', '#99FF99', '#FFCC99', '#CC99FF', '#FFFF99', '#FF99CC'];
+  const colors = ['#FF9999', '#99CCFF', '#99FF99', '#FFCC99', '#CC99FF', '#FFFF99', '#FF99CC', '#66CCCC', '#FFB366', '#A3A3FF'];
 
   stockUsed.forEach((s, idx) => {
     for (let q = 0; q < s.quantity; q++) {
@@ -162,12 +174,16 @@ function drawPatterns(stockLength, partLengths, stockUsed) {
           ctx.fillStyle = '#000';
           ctx.font = '12px Arial';
           ctx.fillText(`P${i + 1}`, left + width / 2 - 10, top + barHeight / 2 + 4);
+
+          // show cumulative length marker
           left += width;
+          ctx.fillText(`${Math.round(left / scale)}`, left - 20, top - 5);
         }
       });
 
       const usedLength = s.pattern.cuts.reduce((sum, c, i) => sum + c * partLengths[i], 0);
       const waste = stockLength - usedLength;
+
       if (waste > 0) {
         ctx.fillStyle = '#444';
         ctx.fillRect(left, top, waste * scale, barHeight);
@@ -176,24 +192,14 @@ function drawPatterns(stockLength, partLengths, stockUsed) {
       }
 
       ctx.fillStyle = '#000';
-      ctx.font = '14px Arial';
-      ctx.fillText(`Pattern ${idx + 1} ×${s.quantity}`, 5, top - 5);
+      ctx.font = '13px Arial';
+      ctx.fillText(`Pattern ${idx + 1} ×${s.quantity} | Used ${usedLength} / Waste ${waste}`, 5, top + barHeight + 15);
 
-      top += barHeight + spacing;
+      top += barHeight + spacing + 10;
     }
   });
 }
 </script>
-
-<!-- README / Project Info section -->
-<div id="project-info">
-  <h2>About This Project</h2>
-  <p>This project is a web-based tool to optimize stock cutting for various parts.</p>
-  <p><strong>Developer:</strong> Getnet Tadesse</p>
-  <p><strong>Location:</strong> Ethiopia</p>
-  <p><strong>Tools:</strong> HTML, JavaScript, Canvas</p>
-  <p>Upload your stock length, part lengths, and part demands, then click "Run Optimization" to visualize the cutting patterns.</p>
-</div>
 
 </body>
 </html>

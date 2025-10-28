@@ -249,5 +249,13 @@ function drawPatterns(stockLength, partLengths, stockUsed){
   });
 }
 </script>
+  <script>
+  // Prevent browser caching of the page
+  if (!window.location.search.includes('nocache')) {
+    const timestamp = new Date().getTime();
+    window.location.replace(window.location.pathname + '?nocache=' + timestamp);
+  }
+</script>
 </body>
 </html>
+

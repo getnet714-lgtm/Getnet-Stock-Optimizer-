@@ -185,14 +185,24 @@ function runOptimizer(){
   const patterns=generatePatterns(stockLength, partLengths);
   const stockUsed=allocatePatterns(patterns, partDemands, stockLength, partLengths);
 
-  let totalStock=stockUsed.length;
-  let totalWaste=stockUsed.reduce((s,a)=>s+a.pattern.waste,0);
+  // === NEW MERGE FIX ===
+  const merged=[];
+  stockUsed.forEach(s=>{
+    const key=s.pattern.cuts.join(',')+'-'+s.pattern.waste;
+    const found=merged.find(m=>m.key===key);
+    if(found) found.quantity+=s.quantity;
+    else merged.push({...s, key});
+  });
+  merged.forEach(m=>delete m.key);
+
+  let totalStock=merged.reduce((s,a)=>s+a.quantity,0);
+  let totalWaste=merged.reduce((s,a)=>s+a.pattern.waste*a.quantity,0);
   let utilization=1-totalWaste/(totalStock*stockLength);
 
   document.getElementById('summary').innerHTML=
     `Total Stock Used: ${totalStock} | Total Waste: ${totalWaste} | Utilization: ${(utilization*100).toFixed(2)}%`;
 
-  drawPatterns(stockLength, partLengths, stockUsed);
+  drawPatterns(stockLength, partLengths, merged);
 }
 
 function drawPatterns(stockLength, partLengths, stockUsed){
